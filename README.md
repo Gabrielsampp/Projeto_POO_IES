@@ -184,7 +184,7 @@ erDiagram
     Relatorio
 ```
 
-Para visualizar o diagrama UML desenvolvido, [clique aqui](UMLquiz.md).
+Para visualizar o diagrama UML desenvolvido, [clique aqui](./docs//UMLquiz.md).
 
 ---
 

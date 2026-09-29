@@ -1,5 +1,5 @@
 # Diagrama UML - Sistema de Quiz Educacional
-Para ir ao README, [clique aqui](README.md).
+Para ir ao README, [clique aqui](../README.md).
 ```mermaid
 classDiagram
 
