@@ -54,6 +54,7 @@ classDiagram
     }
 
     class PerguntaBonus {
+        +calcular_pontuacao() int
     }
 
     class Quiz {
