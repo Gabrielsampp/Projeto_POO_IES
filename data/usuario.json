@@ -10,5 +10,11 @@
         "nome": "Ana",
         "email": "ana@email.com",
         "identificador": "A001"
+    },
+    {
+        "tipo": "Professor",
+        "nome": "gregorio",
+        "email": "paulo@email.com",
+        "identificador": "P002"
     }
 ]

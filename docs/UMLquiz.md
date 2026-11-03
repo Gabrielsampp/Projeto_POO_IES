@@ -1,112 +1,135 @@
-# Diagrama UML - Sistema de Quiz Educacional
-Para ir ao README, [clique aqui](../README.md).
+# Diagrama UML — Sistema de Quiz Educacional
+
+Para retornar ao README, [clique aqui](../README.md).
+
 ```mermaid
 classDiagram
 
-    %% =========================
-    %% Classes
-    %% =========================
-
     class Usuario {
-        -str nome
-        -str identificador
-        +validar_nome() void
-        +validar_identificador() void
-        +__str__() str
-        +__eq__(other) bool
-    }
-
-    class Participante {
-        <<mixin>>
-        +responder() void
-    }
-
-    class Criador {
-        <<mixin>>
-        +criar_quiz() void
-        +editar_quiz() void
+        <<abstract>>
+        -str _nome
+        -str _email
+        -str _identificador
+        +tipo*
+        +__str__()
+        +__eq__(outro)
     }
 
     class Aluno {
+        +tipo
+        +__str__()
     }
 
     class Professor {
+        +tipo
+        +__str__()
+    }
+
+    class Participante {
+        -list _tentativas
+        +tentativas
+        +adicionar_tentativa(tentativa)
+    }
+
+    class Criador {
+        -list _quizzes
+        +quizzes
+        +adicionar_quiz(quiz)
     }
 
     class Tema {
-        -str nome
-        +validar_nome() void
+        -str _nome
+        +nome
+        +__str__()
+        +__eq__(outro)
     }
 
     class Pergunta {
-        -str enunciado
-        -list alternativas
-        -int indice_correta
-        -str dificuldade
-        -Tema tema
-        +adicionar_alternativa(alternativa) void
-        +remover_alternativa(indice) void
-        +alterar_alternativa(indice, alternativa) void
-        +verificar_resposta(indice) bool
-        +calcular_pontuacao() int
-        +validar() void
-        +__str__() str
-    }
-
-    class PerguntaBonus {
-        +calcular_pontuacao() int
+        -Tema _tema
+        -str _enunciado
+        -list _alternativas
+        -int _indice_correto
+        -str _dificuldade
+        -Quiz _quiz
+        +tema
+        +enunciado
+        +alternativas
+        +indice_correto
+        +dificuldade
+        +quiz
+        +adicionar_alternativa(valor)
+        +remover_alternativa(indice)
+        +alterar_alternativa(indice, valor)
+        +verificar_resposta(indice)
+        +calcular_pontuacao()
+        +__str__()
+        +__eq__(outro)
     }
 
     class Quiz {
-        -str titulo
-        -list perguntas
-        -int limite_tempo
-        -int limite_tentativas
-        -int valor_bonus
-        -Professor professor
-        +adicionar_pergunta(pergunta) void
-        +remover_pergunta(pergunta) void
-        +alterar_ordem_perguntas() void
-        +calcular_pontuacao_maxima() int
-        +iniciar() Tentativa
-        +pode_realizar_tentativa(usuario) bool
-        +__len__() int
-    }
-
-    class Resposta {
-        -Pergunta pergunta
-        -int alternativa_escolhida
-        -float tempo_gasto
-        -int pontuacao_obtida
-        +corrigir() bool
-        +calcular_pontuacao() int
+        -str _titulo
+        -list _perguntas
+        -float _limite_tempo
+        -int _limite_tentativas
+        -int _valor_bonus
+        -Professor _professor
+        -bool _congelado
+        +titulo
+        +perguntas
+        +limite_tempo
+        +limite_tentativas
+        +valor_bonus
+        +professor
+        +congelado
+        +adicionar_pergunta(pergunta)
+        +remover_pergunta(pergunta)
+        +alterar_ordem_perguntas(perguntas)
+        +calcular_pontuacao_maxima()
+        +__len__()
+        +__iter__()
+        +__str__()
     }
 
     class Tentativa {
-        -Usuario usuario
-        -Quiz quiz
-        -list respostas
-        -int pontuacao
-        -float tempo_total
-        -datetime data_hora
-        -str status
-        +registrar_resposta(resposta) void
-        +calcular_pontuacao() int
-        +finalizar() void
-        +encerrar_por_tempo() void
-        +__iter__() iterator
+        -Participante _participante
+        -Quiz _quiz
+        -dict _respostas
+        -datetime _data_inicio
+        -datetime _data_fim
+        -str _status
+        +participante
+        +quiz
+        +respostas
+        +data_inicio
+        +data_fim
+        +status
+        +pontuacao
+        +acertos
+        +quantidade_respondida
+        +taxa_acerto
+        +duracao
+        +completa
+        +registrar_resposta(indice_pergunta, indice_alternativa)
+        +finalizar()
+    }
+
+    class Resposta {
+        -Pergunta _pergunta
+        -int _indice_alternativa
+        +pergunta
+        +indice_alternativa
+        +correta
+        +pontuacao
     }
 
     class Relatorio {
-        +gerar_ranking() list
-        +desempenho_por_tema() dict
-        +questoes_mais_erradas() list
-        +evolucao_desempenho() dict
+        +taxa_aprovacao()
+        +distribuicao_notas()
+        +top_n_por_media_desempenho(n)
+        +desempenho_por_tema(participante)
+        +questoes_mais_erradas(n)
+        +evolucao_usuario(participante)
     }
-
-    %% =========================
-    %% Herança e Mixins
-    %% =========================
 
     Usuario <|-- Aluno
     Usuario <|-- Professor
@@ -116,17 +139,24 @@ classDiagram
 
     Criador <|-- Professor
 
-    Pergunta <|-- PerguntaBonus
+    Professor "1" --> "0..*" Quiz : cria
+    Quiz "1" o-- "1..*" Pergunta : mantém
+    Pergunta "*" --> "1" Tema : pertence
+    Pergunta "0..1" --> "0..1" Quiz : vinculada
+    Participante "1" --> "0..*" Tentativa : realiza
+    Quiz "1" --> "0..*" Tentativa : recebe
+    Tentativa "1" *-- "0..*" Resposta : registra
+    Resposta "*" --> "1" Pergunta : responde
+    Relatorio ..> Tentativa : analisa
+```
 
-    %% =========================
-    %% Relacionamentos
-    %% =========================
+## Observações sobre o modelo
 
-    Professor "1" --> "0..*" Quiz : Cria / Gerencia
-    Quiz "1" *-- "1..*" Pergunta : Composicao
-    Pergunta "*" --> "1" Tema : Pertence a
-    Usuario "1" --> "0..*" Tentativa : Realiza
-    Quiz "1" --> "0..*" Tentativa : Possui
-    Tentativa "1" *-- "0..*" Resposta : Composicao
-    Resposta "*" --> "1" Pergunta : Responde
-    Professor --> Relatorio : Consulta
+- `Usuario` é uma classe abstrata.
+- `Aluno` e `Professor` herdam de `Usuario`.
+- `Participante` e `Criador` são classes independentes, reutilizadas por múltipla herança.
+- `Professor` pode atuar como criador e participante.
+- `Quiz` mantém uma coleção de perguntas.
+- `Tentativa` registra as respostas de um participante em um quiz.
+- `Relatorio` analisa os dados das tentativas.
+
