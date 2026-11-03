@@ -1,6 +1,8 @@
-# Classe Quiz
-class Quiz:
 
+from src.quiz.pergunta import Pergunta
+
+
+class Quiz:
     def __init__(
         self,
         titulo,
@@ -10,114 +12,196 @@ class Quiz:
         valor_bonus=0,
         professor=None
     ):
+        self._congelado = False
+
         self.titulo = titulo
-        self.perguntas = perguntas if perguntas is not None else []
         self.limite_tempo = limite_tempo
         self.limite_tentativas = limite_tentativas
         self.valor_bonus = valor_bonus
         self.professor = professor
 
-        self.validar()
+        self._perguntas = []
 
-    # Validação dos dados do Quiz
-    def validar(self):
-
-        if not isinstance(self.titulo, str) or self.titulo.strip() == "":
-            raise ValueError("O título do Quiz não pode estar vazio.")
-
-        if not isinstance(self.perguntas, list):
-            raise TypeError("As perguntas devem estar em uma lista.")
-
-        for pergunta in self.perguntas:
-            from pergunta import Pergunta
-
-            if not isinstance(pergunta, Pergunta):
-                raise TypeError("O Quiz só pode possuir objetos Pergunta.")
-
-        if self.limite_tempo is not None:
-            if not isinstance(self.limite_tempo, (int, float)):
-                raise TypeError("O limite de tempo deve ser numérico.")
-
-            if self.limite_tempo <= 0:
-                raise ValueError("O limite de tempo deve ser maior que zero.")
-
-        if self.limite_tentativas is not None:
-            if not isinstance(self.limite_tentativas, int):
-                raise TypeError("O limite de tentativas deve ser inteiro.")
-
-            if self.limite_tentativas <= 0:
-                raise ValueError("O limite de tentativas deve ser maior que zero.")
-
-        if not isinstance(self.valor_bonus, (int, float)):
-            raise TypeError("O valor do bônus deve ser numérico.")
-
-        if self.valor_bonus < 0:
-            raise ValueError("O valor do bônus não pode ser negativo.")
-
-        return True
-
-    # Adiciona uma pergunta ao Quiz
-    def adicionar_pergunta(self, pergunta):
-
-        from pergunta import Pergunta
-
-        if not isinstance(pergunta, Pergunta):
-            raise TypeError("É necessário adicionar uma Pergunta.")
-
-        for pergunta_existente in self.perguntas:
-            if pergunta_existente == pergunta:
-                raise ValueError(
-                    "Não é possível adicionar uma pergunta duplicada."
+        if perguntas is not None:
+            if not isinstance(perguntas, (list, tuple)):
+                raise TypeError(
+                    "As perguntas devem estar em uma lista ou tupla."
                 )
 
-        self.perguntas.append(pergunta)
+            for pergunta in perguntas:
+                self.adicionar_pergunta(pergunta)
 
-    # Remove uma pergunta do Quiz
-    def remover_pergunta(self, pergunta):
+    @property
+    def titulo(self):
+        return self._titulo
 
-        if pergunta not in self.perguntas:
-            raise ValueError("A pergunta não está neste Quiz.")
+    @titulo.setter
+    def titulo(self, valor):
+        self._verificar_edicao()
 
-        self.perguntas.remove(pergunta)
+        if not isinstance(valor, str):
+            raise TypeError("O título deve ser um texto.")
 
-    # Altera a ordem das perguntas
-    def alterar_ordem_perguntas(self, nova_ordem):
+        valor = valor.strip()
 
-        if not isinstance(nova_ordem, list):
-            raise TypeError("A nova ordem deve ser uma lista.")
+        if not valor:
+            raise ValueError("O título não pode estar vazio.")
 
-        if len(nova_ordem) != len(self.perguntas):
-            raise ValueError(
-                "A nova ordem deve possuir a mesma quantidade de perguntas."
+        self._titulo = valor
+
+    @property
+    def perguntas(self):
+        return tuple(self._perguntas)
+
+    @property
+    def limite_tempo(self):
+        return self._limite_tempo
+
+    @limite_tempo.setter
+    def limite_tempo(self, valor):
+        self._verificar_edicao()
+
+        if valor is not None:
+            if type(valor) not in (int, float):
+                raise TypeError(
+                    "O limite de tempo deve ser numérico."
+                )
+
+            if valor <= 0:
+                raise ValueError(
+                    "O limite de tempo deve ser maior que zero."
+                )
+
+        self._limite_tempo = valor
+
+    @property
+    def limite_tentativas(self):
+        return self._limite_tentativas
+
+    @limite_tentativas.setter
+    def limite_tentativas(self, valor):
+        self._verificar_edicao()
+
+        if valor is not None:
+            if type(valor) is not int:
+                raise TypeError(
+                    "O limite de tentativas deve ser inteiro."
+                )
+
+            if valor <= 0:
+                raise ValueError(
+                    "O limite de tentativas deve ser maior que zero."
+                )
+
+        self._limite_tentativas = valor
+
+    @property
+    def valor_bonus(self):
+        return self._valor_bonus
+
+    @valor_bonus.setter
+    def valor_bonus(self, valor):
+        self._verificar_edicao()
+
+        if type(valor) not in (int, float):
+            raise TypeError(
+                "O valor do bônus deve ser numérico."
             )
 
-        if set(nova_ordem) != set(self.perguntas):
+        if valor < 0:
+            raise ValueError(
+                "O valor do bônus não pode ser negativo."
+            )
+
+        self._valor_bonus = valor
+
+    @property
+    def congelado(self):
+        return self._congelado
+
+    def _verificar_edicao(self):
+        if self._congelado:
+            raise ValueError(
+                "Este Quiz não pode mais ser alterado."
+            )
+
+    def adicionar_pergunta(self, pergunta):
+        self._verificar_edicao()
+
+        if not isinstance(pergunta, Pergunta):
+            raise TypeError(
+                "É necessário adicionar um objeto Pergunta."
+            )
+
+        if pergunta in self._perguntas:
+            raise ValueError(
+                "Esta pergunta já está no Quiz."
+            )
+
+        pergunta._vincular_quiz(self)
+        self._perguntas.append(pergunta)
+
+    def remover_pergunta(self, pergunta):
+        self._verificar_edicao()
+
+        for indice, existente in enumerate(self._perguntas):
+            if existente is pergunta:
+                self._perguntas.pop(indice)
+                return
+
+        raise ValueError(
+            "A pergunta não pertence a este Quiz."
+        )
+
+    def alterar_ordem_perguntas(self, nova_ordem):
+        self._verificar_edicao()
+
+        if not isinstance(nova_ordem, (list, tuple)):
+            raise TypeError(
+                "A nova ordem deve ser uma lista ou tupla."
+            )
+
+        if len(nova_ordem) != len(self._perguntas):
+            raise ValueError(
+                "A nova ordem deve possuir todas as perguntas do Quiz."
+            )
+
+        if {
+            id(pergunta) for pergunta in nova_ordem
+        } != {
+            id(pergunta) for pergunta in self._perguntas
+        }:
             raise ValueError(
                 "A nova ordem deve conter exatamente as perguntas do Quiz."
             )
 
-        self.perguntas = nova_ordem
+        self._perguntas = list(nova_ordem)
 
-    # Calcula a pontuação máxima do Quiz
     def calcular_pontuacao_maxima(self):
-
-        pontuacao = 0
-
-        for pergunta in self.perguntas:
-            pontuacao += pergunta.calcular_pontuacao()
+        pontuacao = sum(
+            pergunta.calcular_pontuacao()
+            for pergunta in self._perguntas
+        )
 
         return pontuacao + self.valor_bonus
 
-    # Retorna a quantidade de perguntas
+    def _congelar(self):
+        if not self._perguntas:
+            raise ValueError(
+                "Não é possível iniciar um Quiz sem perguntas."
+            )
+
+        self._congelado = True
+
     def __len__(self):
+        return len(self._perguntas)
 
-        return len(self.perguntas)
+    def __iter__(self):
+        return iter(self._perguntas)
 
-    # Representação do Quiz
     def __str__(self):
-
         return (
             f"Quiz: {self.titulo}\n"
-            f"Quantidade de perguntas: {len(self.perguntas)}\n"
+            f"Quantidade de perguntas: {len(self)}\n"
             f"Pontuação máxima: {self.calcular_pontuacao_maxima()}"
         )
