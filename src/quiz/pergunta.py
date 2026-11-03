@@ -5,13 +5,22 @@ from src.tema.tema import Tema
 class Pergunta:
     def __init__(
         self, tema, enunciado, alternativas,
-        indice_correto, dificuldade
+        indice_correto, dificuldade, self._quiz = None
     ):
         self.tema = tema
         self.enunciado = enunciado
         self.alternativas = alternativas
         self.indice_correto = indice_correto
         self.dificuldade = dificuldade
+        @property
+        def quiz(self):
+         return self._quiz
+
+        def _vincular_quiz(self, quiz):
+         if self._quiz is not None and self._quiz is not quiz:
+            raise ValueError("Esta pergunta já pertence a outro Quiz.")
+
+    self._quiz = quiz
 
     @property
     def tema(self):
