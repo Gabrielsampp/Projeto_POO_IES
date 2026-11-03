@@ -1,11 +1,13 @@
 
 from src.usuario.usuario import Usuario
+from src.papeis.participante import Participante
 from src.quiz.quiz import Quiz
 
 
-class Professor(Usuario):
+class Professor(Usuario, Participante):
     def __init__(self, nome, email, identificador):
-        super().__init__(nome, email, identificador)
+        Usuario.__init__(self, nome, email, identificador)
+        Participante.__init__(self)
         self._quizzes = []
 
     @property
@@ -32,5 +34,6 @@ class Professor(Usuario):
     def __str__(self):
         return (
             f"{super().__str__()}\n"
-            f"Quizzes cadastrados: {len(self._quizzes)}"
+            f"Quizzes cadastrados: {len(self._quizzes)}\n"
+            f"Total de tentativas: {len(self.tentativas)}"
         )
