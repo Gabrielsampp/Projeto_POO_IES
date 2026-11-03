@@ -1,0 +1,14 @@
+[
+    {
+        "tipo": "Professor",
+        "nome": "Paulo",
+        "email": "paulo@email.com",
+        "identificador": "P001"
+    },
+    {
+        "tipo": "Aluno",
+        "nome": "Ana",
+        "email": "ana@email.com",
+        "identificador": "A001"
+    }
+]

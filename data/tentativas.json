@@ -1,0 +1,16 @@
+[
+    {
+        "id": "T0001",
+        "participante": "A001",
+        "quiz": "Q0001",
+        "data_inicio": "2026-11-03T09:52:22.615781",
+        "data_fim": "2026-11-03T09:52:25.036443",
+        "status": "concluida",
+        "respostas": [
+            {
+                "pergunta": "P0001",
+                "indice_alternativa": 1
+            }
+        ]
+    }
+]

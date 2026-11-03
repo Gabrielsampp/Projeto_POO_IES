@@ -1,0 +1,31 @@
+{
+    "perguntas": [
+        {
+            "id": "P0001",
+            "tema": "z",
+            "enunciado": "e",
+            "alternativas": [
+                "a",
+                "b",
+                "c"
+            ],
+            "indice_correto": 1,
+            "dificuldade": "D",
+            "quiz_id": "Q0001"
+        }
+    ],
+    "quizzes": [
+        {
+            "id": "Q0001",
+            "titulo": "Programação básica",
+            "perguntas": [
+                "P0001"
+            ],
+            "limite_tempo": null,
+            "limite_tentativas": null,
+            "valor_bonus": 0,
+            "professor": "P001",
+            "congelado": true
+        }
+    ]
+}
