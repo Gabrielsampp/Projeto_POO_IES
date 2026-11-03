@@ -12,5 +12,33 @@
                 "indice_alternativa": 1
             }
         ]
+    },
+    {
+        "id": "T0002",
+        "participante": "A001",
+        "quiz": "Q0002",
+        "data_inicio": "2026-11-03T11:03:29.505794",
+        "data_fim": "2026-11-03T11:03:32.356879",
+        "status": "concluida",
+        "respostas": [
+            {
+                "pergunta": "P0002",
+                "indice_alternativa": 1
+            }
+        ]
+    },
+    {
+        "id": "T0003",
+        "participante": "A001",
+        "quiz": "Q0003",
+        "data_inicio": "2026-11-03T11:06:33.769952",
+        "data_fim": "2026-11-03T11:06:35.558492",
+        "status": "concluida",
+        "respostas": [
+            {
+                "pergunta": "P0003",
+                "indice_alternativa": 1
+            }
+        ]
     }
 ]

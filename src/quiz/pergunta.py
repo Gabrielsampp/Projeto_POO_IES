@@ -1,4 +1,3 @@
-
 from src.tema.tema import Tema
 
 

@@ -1,4 +1,3 @@
-
 import argparse
 import json
 from pathlib import Path
@@ -11,6 +10,7 @@ from src.usuario.aluno import Aluno
 from src.usuario.professor import Professor
 from src.tentativa.tentativa import Tentativa
 from src.relatorio.relatorio import Relatorio
+from src.quiz.pergunta_bonus import PerguntaBonus
 
 
 ARQUIVO_CONFIG = Path(__file__).parent / "settings.json"
@@ -64,9 +64,27 @@ def carregar_configuracoes():
     with ARQUIVO_CONFIG.open("r", encoding="utf-8") as arquivo:
         configuracoes = json.load(arquivo)
 
-    padrao.update(configuracoes)
-    return padrao
+    if not isinstance(configuracoes, dict):
+        raise ValueError("O arquivo de configurações deve conter um objeto JSON.")
 
+    padrao.update(configuracoes)
+
+    tempo = padrao["limite_tempo_padrao"]
+    tentativas_padrao = padrao["limite_tentativas_padrao"]
+    nota = padrao["nota_minima_aprovacao"]
+
+    if tempo is not None:
+        if type(tempo) not in (int, float) or tempo <= 0:
+            raise ValueError("O limite de tempo padrão deve ser positivo.")
+
+    if tentativas_padrao is not None:
+        if type(tentativas_padrao) is not int or tentativas_padrao <= 0:
+            raise ValueError("O limite de tentativas padrão deve ser inteiro e positivo.")
+
+    if type(nota) not in (int, float) or not 0 <= nota <= 100:
+        raise ValueError("A nota mínima de aprovação deve estar entre 0 e 100.")
+
+    return padrao
 
 config = carregar_configuracoes()
 
@@ -124,7 +142,14 @@ def cadastrar_pergunta(args):
     indice_correto = int(input("Número da alternativa correta: ")) - 1
     dificuldade = input("Dificuldade (F/M/D): ").strip().upper()
 
-    pergunta = Pergunta(
+    bonus = input("Esta pergunta será bônus? (s/n): ").strip().casefold()
+
+    if bonus not in ("s", "n"):
+        raise ValueError("Informe s para sim ou n para não.")
+
+    classe_pergunta = PerguntaBonus if bonus == "s" else Pergunta
+
+    pergunta = classe_pergunta(
         tema,
         enunciado,
         alternativas,
@@ -250,9 +275,12 @@ def executar_quiz(args):
 
 
 def relatorio_aprovacao(args):
-    relatorio = Relatorio(tentativas)
-    print(f"Taxa de aprovação: {relatorio.taxa_aprovacao():.2f}%")
+    relatorio = Relatorio(
+        tentativas,
+        nota_minima_aprovacao=config["nota_minima_aprovacao"]
+    )
 
+    print(f"Taxa de aprovação: {relatorio.taxa_aprovacao():.2f}%")
 
 def relatorio_distribuicao(args):
     distribuicao = Relatorio(tentativas).distribuicao_notas()

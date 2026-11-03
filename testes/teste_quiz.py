@@ -1,9 +1,9 @@
-
 import pytest
 
 from src.tema.tema import Tema
 from src.quiz.pergunta import Pergunta
 from src.quiz.quiz import Quiz
+from src.quiz.pergunta_bonus import PerguntaBonus
 
 
 @pytest.fixture
@@ -161,3 +161,26 @@ def test_impedir_alterar_bonus_apos_congelamento(quiz):
     quiz._congelar()
     with pytest.raises(ValueError):
         quiz.valor_bonus = 10
+
+def test_pontuacao_maxima_com_pergunta_bonus():
+    tema = Tema("Python")
+
+    normal = Pergunta(
+        tema, "Normal", ["A", "B", "C"], 0, "F"
+    )
+
+    bonus = PerguntaBonus(
+        tema, "Bonus", ["A", "B", "C"], 0, "D"
+    )
+
+    quiz = Quiz("Quiz bônus", [normal, bonus])
+
+    assert quiz.calcular_pontuacao_maxima() == 6
+
+
+def test_pergunta_bonus_calcula_pontuacao():
+    bonus = PerguntaBonus(
+        Tema("Python"), "Bonus", ["A", "B", "C"], 0, "D"
+    )
+
+    assert bonus.calcular_pontuacao() == 5

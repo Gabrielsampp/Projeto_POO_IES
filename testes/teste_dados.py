@@ -1,4 +1,3 @@
-
 import pytest
 
 import src.dados as dados
@@ -9,6 +8,7 @@ from src.quiz.quiz import Quiz
 from src.usuario.aluno import Aluno
 from src.usuario.professor import Professor
 from src.tentativa.tentativa import Tentativa
+from src.quiz.pergunta_bonus import PerguntaBonus
 
 
 def criar_cenario():
@@ -103,3 +103,33 @@ def test_carregar_dados_vazios(monkeypatch, tmp_path):
         "usuarios": [],
         "tentativas": []
     }
+
+def test_salvar_e_carregar_pergunta_bonus(monkeypatch, tmp_path):
+    monkeypatch.setattr(dados, "DIRETORIO_DATA", tmp_path)
+
+    tema = Tema("Python")
+
+    pergunta = PerguntaBonus(
+        tema, "Pergunta bônus", ["A", "B", "C"], 0, "D"
+    )
+
+    professor = Professor("Paulo", "paulo@email.com", "P001")
+    quiz = Quiz("Quiz bônus", [pergunta])
+    professor.adicionar_quiz(quiz)
+
+    dados.salvar_dados(
+        [tema],
+        [pergunta],
+        [quiz],
+        [professor],
+        []
+    )
+
+    carregados = dados.carregar_dados()
+
+    assert isinstance(
+        carregados["perguntas"][0],
+        PerguntaBonus
+    )
+
+    assert carregados["quizzes"][0].calcular_pontuacao_maxima() == 5

@@ -1,5 +1,8 @@
-from quiz.pergunta import Perguntas
+from src.quiz.pergunta import Pergunta
+
 
 class PerguntaBonus(Pergunta):
-    "Define a pergunta bônus"
-    pass
+    """Pergunta que concede 2 pontos adicionais."""
+
+    def calcular_pontuacao(self):
+        return super().calcular_pontuacao() + 2

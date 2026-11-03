@@ -5,7 +5,7 @@ from src.usuario.aluno import Aluno
 class Relatorio:
     """Gera relatórios a partir das tentativas registradas no sistema."""
 
-    def __init__(self, tentativas):
+    def __init__(self, tentativas, nota_minima_aprovacao=70):
         if isinstance(tentativas, (str, bytes)):
             raise TypeError("As tentativas devem ser fornecidas em uma coleção.")
 
@@ -16,6 +16,14 @@ class Relatorio:
 
         if any(not hasattr(t, "completa") for t in self._tentativas):
             raise TypeError("A coleção contém um objeto que não é uma Tentativa.")
+
+        if type(nota_minima_aprovacao) not in (int, float):
+            raise TypeError("A nota mínima deve ser numérica.")
+
+        if not 0 <= nota_minima_aprovacao <= 100:
+            raise ValueError("A nota mínima deve estar entre 0 e 100.")
+
+        self._nota_minima_aprovacao = nota_minima_aprovacao
 
     @property
     def tentativas(self):
@@ -45,7 +53,7 @@ class Relatorio:
             return 0.0
 
         aprovadas = sum(
-            self._desempenho(t) >= 70
+            self._desempenho(t) >= self._nota_minima_aprovacao
             for t in tentativas
         )
 

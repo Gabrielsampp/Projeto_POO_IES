@@ -22,7 +22,9 @@ O projeto aplica conceitos de Programação Orientada a Objetos, incluindo heran
 
 O sistema simula um ambiente de avaliações educacionais. Professores podem cadastrar perguntas e criar quizzes, enquanto alunos podem realizar tentativas e acompanhar seus resultados.
 
-As perguntas são organizadas por temas e possuem níveis de dificuldade. Cada tentativa registra as respostas, a pontuação obtida, o tempo e o estado de conclusão.
+As perguntas são organizadas por temas e possuem níveis de dificuldade. Também podem ser classificadas como bônus, concedendo pontuação adicional quando respondidas corretamente.
+
+Cada tentativa registra as respostas, a pontuação obtida, o tempo e o estado de conclusão.
 
 Os resultados podem ser consultados por meio de relatórios que apresentam indicadores gerais e individuais.
 
@@ -50,7 +52,7 @@ Aplicar os conhecimentos de Programação Orientada a Objetos em um sistema func
 Clone o repositório e acesse a pasta do projeto:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone <https://github.com/Gabrielsampp/Projeto_POO_IES.git>
 cd Projeto_POO_IES
 ```
 
@@ -66,7 +68,9 @@ Execute o sistema:
 py main.py --help
 ```
 
-Os dados são armazenados nos arquivos JSON da pasta `data/`. O sistema carrega esses dados ao iniciar e os atualiza após operações que modificam o cadastro ou os resultados.
+O comando `--help` apresenta os grupos de operações disponíveis.
+
+Os dados são armazenados em arquivos JSON na pasta `data/`. O sistema carrega esses dados ao iniciar e os atualiza após operações que modificam os cadastros ou os resultados.
 
 ## ⌨️ Comandos disponíveis
 
@@ -98,7 +102,15 @@ Cadastrar uma pergunta:
 py main.py pergunta adicionar
 ```
 
-O sistema solicitará tema, enunciado, alternativas, resposta correta e dificuldade.
+O sistema solicitará:
+
+- Tema.
+- Enunciado.
+- Quantidade de alternativas.
+- Alternativas.
+- Número da alternativa correta.
+- Dificuldade (Fácil, Média ou Difícil).
+- Classificação como pergunta bônus ou normal.
 
 Listar perguntas:
 
@@ -116,7 +128,7 @@ py main.py quiz criar --titulo "Programação básica" --professor P001
 
 Durante a criação, o sistema solicitará os números das perguntas que farão parte do quiz.
 
-Também é possível informar limites:
+Também é possível configurar limites:
 
 ```bash
 py main.py quiz criar --titulo "Programação básica" --professor P001 --tempo 30 --limite-tentativas 2
@@ -236,7 +248,7 @@ Projeto_POO_IES/
 
 - `usuario/`: identidade e especializações dos usuários.
 - `papeis/`: comportamentos de participação e criação.
-- `quiz/`: perguntas e gerenciamento dos quizzes.
+- `quiz/`: perguntas, perguntas bônus e gerenciamento dos quizzes.
 - `tema/`: representação dos temas.
 - `tentativa/`: execução, respostas e resultados.
 - `relatorio/`: análise dos resultados registrados.
@@ -253,6 +265,8 @@ O sistema utiliza herança para especializar usuários e múltipla herança para
 
 O quiz mantém suas perguntas e cada tentativa registra as respostas associadas à avaliação realizada.
 
+As perguntas bônus são especializações de `Pergunta`, utilizando herança e polimorfismo para calcular a pontuação adicional.
+
 As decisões de modelagem estão documentadas em [`docs/decisoes-de-design.md`](docs/decisoes-de-design.md).
 
 O diagrama UML está disponível em [`docs/UMLquiz.md`](docs/UMLquiz.md).
@@ -261,9 +275,13 @@ O diagrama UML está disponível em [`docs/UMLquiz.md`](docs/UMLquiz.md).
 
 - Cadastro e listagem de alunos e professores.
 - Cadastro de perguntas com tema, alternativas, resposta correta e dificuldade.
+- Classificação de perguntas como normais ou bônus.
+- Pontuação adicional de 2 pontos para perguntas bônus respondidas corretamente.
+- Cálculo de pontuação conforme a dificuldade e a classificação da pergunta.
 - Validação de perguntas e alternativas.
 - Criação e listagem de quizzes.
 - Associação de perguntas aos quizzes.
+- Bloqueio de reutilização de perguntas em outros quizzes.
 - Limite de tempo e de tentativas configurável por quiz.
 - Execução de tentativas e registro de respostas.
 - Cálculo de pontuação e taxa de acerto.
@@ -273,13 +291,12 @@ O diagrama UML está disponível em [`docs/UMLquiz.md`](docs/UMLquiz.md).
 
 ## 🧪 Testes
 
-O projeto utiliza Pytest para verificar as regras de negócio, validações, relacionamentos, execução das tentativas, relatórios e persistência.
+O projeto utiliza Pytest para verificar as regras de negócio, validações, relacionamentos, execução das tentativas, cálculo de pontuação, perguntas bônus, relatórios e persistência.
 
-Para executar a suíte:
+Para executar a suíte de testes:
 
 ```bash
 py -m pytest -v
 ```
 
-**Última validação:** 93 testes aprovados.
-
+**Última validação: 96 testes aprovados.**

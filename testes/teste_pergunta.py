@@ -1,4 +1,3 @@
-
 import pytest
 
 from src.tema.tema import Tema

@@ -1,4 +1,3 @@
-
 import json
 from pathlib import Path
 from datetime import datetime
@@ -10,6 +9,7 @@ from src.usuario.aluno import Aluno
 from src.usuario.professor import Professor
 from src.tentativa.tentativa import Tentativa
 from src.tentativa.resposta import Resposta
+from src.quiz.pergunta_bonus import PerguntaBonus
 
 
 DIRETORIO_DATA = Path(__file__).resolve().parent.parent / "data"
@@ -83,6 +83,11 @@ def salvar_dados(
 
         perguntas_json.append({
             "id": identificador,
+            "tipo": (
+                "bonus"
+                if isinstance(pergunta, PerguntaBonus)
+                else "normal"
+            ),
             "tema": pergunta.tema.nome,
             "enunciado": pergunta.enunciado,
             "alternativas": list(pergunta.alternativas),
@@ -238,7 +243,13 @@ def carregar_dados():
                 f"Tema não encontrado: {item['tema']}"
             )
 
-        pergunta = Pergunta(
+        classe_pergunta = (
+            PerguntaBonus
+            if item.get("tipo") == "bonus"
+            else Pergunta
+        )
+
+        pergunta = classe_pergunta(
             tema,
             item["enunciado"],
             item["alternativas"],
@@ -248,7 +259,6 @@ def carregar_dados():
 
         perguntas.append(pergunta)
         perguntas_por_id[item["id"]] = pergunta
-
     # 4. Reconstruir quizzes e associações.
     quizzes = []
     quizzes_por_id = {}

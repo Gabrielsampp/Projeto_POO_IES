@@ -1,4 +1,3 @@
-
 import pytest
 
 from src.usuario.aluno import Aluno
