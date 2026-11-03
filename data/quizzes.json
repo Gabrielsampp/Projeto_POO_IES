@@ -1,0 +1,84 @@
+{
+    "perguntas": [
+        {
+            "id": "P0001",
+            "tipo": "normal",
+            "tema": "z",
+            "enunciado": "e",
+            "alternativas": [
+                "a",
+                "b",
+                "c"
+            ],
+            "indice_correto": 1,
+            "dificuldade": "D",
+            "quiz_id": "Q0001"
+        },
+        {
+            "id": "P0002",
+            "tipo": "bonus",
+            "tema": "z",
+            "enunciado": "Qual é o resultado de 2 + 2?",
+            "alternativas": [
+                "3",
+                "4",
+                "5"
+            ],
+            "indice_correto": 1,
+            "dificuldade": "F",
+            "quiz_id": "Q0002"
+        },
+        {
+            "id": "P0003",
+            "tipo": "bonus",
+            "tema": "z",
+            "enunciado": "quanto é 7 X 8?",
+            "alternativas": [
+                "30",
+                "56",
+                "64"
+            ],
+            "indice_correto": 1,
+            "dificuldade": "D",
+            "quiz_id": "Q0003"
+        }
+    ],
+    "quizzes": [
+        {
+            "id": "Q0001",
+            "titulo": "Programação básica",
+            "perguntas": [
+                "P0001"
+            ],
+            "limite_tempo": null,
+            "limite_tentativas": null,
+            "valor_bonus": 0,
+            "professor": "P001",
+            "congelado": true
+        },
+        {
+            "id": "Q0002",
+            "titulo": "Teste de pontuacao bonus",
+            "perguntas": [
+                "P0002"
+            ],
+            "limite_tempo": null,
+            "limite_tentativas": null,
+            "valor_bonus": 0,
+            "professor": "P001",
+            "congelado": true
+        },
+        {
+            "id": "Q0003",
+            "titulo": "Teste bonus dificil",
+            "perguntas": [
+                "P0003"
+            ],
+            "limite_tempo": null,
+            "limite_tentativas": null,
+            "valor_bonus": 0,
+            "professor": "P001",
+            "congelado": true
+        }
+    ]
+}

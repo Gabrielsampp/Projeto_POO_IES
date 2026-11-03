@@ -1,4 +1,3 @@
-
 import pytest
 
 from src.papeis.criador import Criador

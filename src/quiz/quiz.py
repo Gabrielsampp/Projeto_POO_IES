@@ -1,4 +1,3 @@
-
 from src.quiz.pergunta import Pergunta
 
 
@@ -178,12 +177,10 @@ class Quiz:
         self._perguntas = list(nova_ordem)
 
     def calcular_pontuacao_maxima(self):
-        pontuacao = sum(
+        return sum(
             pergunta.calcular_pontuacao()
             for pergunta in self._perguntas
-        )
-
-        return pontuacao + self.valor_bonus
+    )
 
     def _congelar(self):
         if not self._perguntas:

@@ -1,224 +1,302 @@
-# # 🧠 Sistema de Quiz Educacional
+# 🧠 Sistema de Quiz Educacional
 
-> **Projeto individual - Programação Orientada a Objetos (2026.2)**
-> Um sistema de quiz educacional baseado em linha de comando, permitindo a criação e gerenciamento de quizzes, cadastro de questões, execução de tentativas, registro de respostas, cálculo de pontuação e geração de relatórios de desempenho. O sistema utiliza conceitos de Programação Orientada a Objetos, como herança, múltipla herança, encapsulamento, composição, associações e validações, além da persistência de dados utilizando JSON.
+**Projeto individual — Programação Orientada a Objetos (2026.2)**
 
-## 📌 Sumário:
+Sistema de quiz educacional executado por linha de comando (CLI), desenvolvido em Python. Permite cadastrar usuários, criar perguntas e quizzes, executar avaliações, registrar tentativas e consultar relatórios de desempenho.
 
-* [Descrição do projeto](#ℹ️-descrição-do-projeto)
-* [Objetivo](#-objetivo-do-projeto)
-* [Como começar](#-como-começar)
-* [Estrutura do projeto](#️-estrutura-do-projeto)
-* [Classes planejadas](#-classes-planejadas)
-* [Decisões de design](#-decisões-de-design)
-* [Funcionalidades](#-funcionalidades)
-* [Cobertura dos testes](#-cobertura-dos-testes)
+O projeto aplica conceitos de Programação Orientada a Objetos, incluindo herança, múltipla herança, encapsulamento, composição, associação e validação de dados. A persistência é realizada por arquivos JSON.
 
----
+## 📌 Sumário
 
-<br>
-<br>
+- [Descrição](#-descrição)
+- [Objetivo](#-objetivo)
+- [Tecnologias](#-tecnologias)
+- [Como executar](#-como-executar)
+- [Comandos disponíveis](#-comandos-disponíveis)
+- [Estrutura do projeto](#-estrutura-do-projeto)
+- [Modelagem e decisões de design](#-modelagem-e-decisões-de-design)
+- [Funcionalidades implementadas](#-funcionalidades-implementadas)
+- [Testes](#-testes)
 
-## ℹ️ Descrição do projeto:
+## ℹ️ Descrição
 
-O projeto consiste no desenvolvimento de um sistema de quiz educacional executado por linha de comando. O sistema busca simular um ambiente de aplicação de avaliações, permitindo que professores criem e gerenciem quizzes, enquanto alunos e professores podem participar das avaliações.
+O sistema simula um ambiente de avaliações educacionais. Professores podem cadastrar perguntas e criar quizzes, enquanto alunos podem realizar tentativas e acompanhar seus resultados.
 
-A aplicação contará com questões organizadas por temas e diferentes níveis de dificuldade, além do registro das tentativas realizadas pelos usuários. A partir dos resultados obtidos serão disponibilizadas informações relacionadas ao desempenho dos participantes.
+As perguntas são organizadas por temas e possuem níveis de dificuldade. Também podem ser classificadas como bônus, concedendo pontuação adicional quando respondidas corretamente.
 
-O sistema será desenvolvido utilizando Programação Orientada a Objetos, buscando aplicar conceitos como `Herança`, `Múltipla Herança`, `Encapsulamento`, `Composição`, `Associação` e `Validação`.
+Cada tentativa registra as respostas, a pontuação obtida, o tempo e o estado de conclusão.
 
-### Lista de tecnologias utilizada:
+Os resultados podem ser consultados por meio de relatórios que apresentam indicadores gerais e individuais.
 
-1. `Python`;
-2. `JSON`;
-3. `Pytest`;
-4. `CLI`;
-5. `Mermaid`.
+## 🎯 Objetivo
 
----
+Aplicar os conhecimentos de Programação Orientada a Objetos em um sistema funcional, com classes de responsabilidades distintas, validações, relacionamentos entre objetos, persistência de dados e testes automatizados.
 
-<br>
-<br>
+## 🛠️ Tecnologias
 
-## 🎯 Objetivo do projeto:
+- Python
+- JSON
+- Pytest
+- CLI
+- Mermaid
 
-O objetivo deste projeto é aplicar os conhecimentos adquiridos ao longo da cadeira de Programação Orientada a Objetos em um sistema prático.
+## 💻 Como executar
 
-O projeto busca demonstrar a aplicação de conceitos como `Herança`, `Múltipla Herança`, `Encapsulamento`, `Composição`, `Associação` e `Validação`, além da utilização de classes com responsabilidades distintas, persistência de dados e testes automatizados.
+### Requisitos
 
----
+- Python instalado.
+- Pytest para executar os testes automatizados.
 
-<br>
-<br>
+### Instalação
 
-## 💻 Como começar:
+Clone o repositório e acesse a pasta do projeto:
 
-```text
-Será documentado posteriormente
+```bash
+git clone <https://github.com/Gabrielsampp/Projeto_POO_IES.git>
+cd Projeto_POO_IES
 ```
 
----
+Instale as dependências:
 
-<br>
-<br>
-
-## 🏗️ Estrutura do Projeto:
-
-A estrutura adotada busca organizar o projeto de acordo com as principais entidades e responsabilidades do sistema. Cada domínio possui sua própria pasta, mantendo suas classes separadas e facilitando a manutenção e evolução da aplicação.
-
-```text
-📂 projeto-quiz-educacional
-│
-├── 📂 data
-│   ├── usuarios.json
-│   ├── quizzes.json
-│   ├── tentativas.json
-│   └── temas.json
-│
-├── 📂 docs
-│   ├── decisoes-de-design.md
-│   └── UML.md
-│
-├── 📂 src
-│   │
-│   ├── 📂 usuario
-│   │   ├── __init__.py
-│   │   ├── usuario.py
-│   │   ├── aluno.py
-│   │   └── professor.py
-│   │
-│   ├── 📂 quiz
-│   │   ├── __init__.py
-│   │   ├── quiz.py
-│   │   ├── pergunta.py
-│   │   └── pergunta_bonus.py
-│   │
-│   ├── 📂 tema
-│   │   ├── __init__.py
-│   │   └── tema.py
-│   │
-│   ├── 📂 tentativa
-│   │   ├── __init__.py
-│   │   ├── tentativa.py
-│   │   └── resposta.py
-│   │
-│   ├── 📂 relatorio
-│   │   ├── __init__.py
-│   │   └── relatorio.py
-│   │
-│   ├── 📂 papeis
-│   │   ├── __init__.py
-│   │   ├── participante.py
-│   │   └── criador.py
-│   │
-│   └── dados.py
-│
-├── 📂 tests
-│   ├── test_usuario.py
-│   ├── test_quiz.py
-│   ├── test_pergunta.py
-│   ├── test_tentativa.py
-│   └── test_relatorio.py
-│
-├── .gitignore
-├── main.py
-├── README.md
-└── requirements.txt
+```bash
+pip install -r requirements.txt
 ```
 
-### Organização das entidades
+Execute o sistema:
 
-* `usuario/` — classes relacionadas aos usuários do sistema.
-* `quiz/` — classes relacionadas aos quizzes e suas questões.
-* `tema/` — gerenciamento dos temas das questões.
-* `tentativa/` — execução dos quizzes e registro das respostas.
-* `relatorio/` — geração dos relatórios e análises.
-* `papeis/` — comportamentos reutilizados através de múltipla herança.
-* `data/` — arquivos JSON utilizados para persistência dos dados.
-* `docs/` — documentação e modelagem do projeto.
-* `tests/` — testes automatizados.
-* `dados.py` — módulo responsável pelas operações de persistência dos dados.
-
----
-
-<br>
-<br>
-
-## 💭 Classes planejadas:
-
-Abaixo está uma representação simplificada das classes planejadas inicialmente para o desenvolvimento deste projeto.
-
-### Usuários e papéis
-
-```mermaid
-erDiagram
-    Usuario
-    Aluno
-    Professor
-    Participante
-    Criador
+```bash
+py main.py --help
 ```
 
-### Quiz e questões
+O comando `--help` apresenta os grupos de operações disponíveis.
 
-```mermaid
-erDiagram
-    Quiz
-    Pergunta
-    PerguntaBonus
-    Tema
+Os dados são armazenados em arquivos JSON na pasta `data/`. O sistema carrega esses dados ao iniciar e os atualiza após operações que modificam os cadastros ou os resultados.
+
+## ⌨️ Comandos disponíveis
+
+### Usuários
+
+Cadastrar professor:
+
+```bash
+py main.py usuario cadastrar --tipo professor --nome "Paulo" --email "paulo@email.com" --identificador "P001"
 ```
 
-### Execução
+Cadastrar aluno:
 
-```mermaid
-erDiagram
-    Tentativa
-    Resposta
+```bash
+py main.py usuario cadastrar --tipo aluno --nome "Ana" --email "ana@email.com" --identificador "A001"
+```
+
+Listar usuários:
+
+```bash
+py main.py usuario listar
+```
+
+### Perguntas
+
+Cadastrar uma pergunta:
+
+```bash
+py main.py pergunta adicionar
+```
+
+O sistema solicitará:
+
+- Tema.
+- Enunciado.
+- Quantidade de alternativas.
+- Alternativas.
+- Número da alternativa correta.
+- Dificuldade (Fácil, Média ou Difícil).
+- Classificação como pergunta bônus ou normal.
+
+Listar perguntas:
+
+```bash
+py main.py pergunta listar
+```
+
+### Quizzes
+
+Criar um quiz:
+
+```bash
+py main.py quiz criar --titulo "Programação básica" --professor P001
+```
+
+Durante a criação, o sistema solicitará os números das perguntas que farão parte do quiz.
+
+Também é possível configurar limites:
+
+```bash
+py main.py quiz criar --titulo "Programação básica" --professor P001 --tempo 30 --limite-tentativas 2
+```
+
+Listar quizzes:
+
+```bash
+py main.py quiz listar
+```
+
+Executar um quiz:
+
+```bash
+py main.py quiz executar --quiz 1 --participante A001
 ```
 
 ### Relatórios
 
-```mermaid
-erDiagram
-    Relatorio
+Consultar taxa de aprovação:
+
+```bash
+py main.py relatorio aprovacao
 ```
 
-Para visualizar o diagrama UML desenvolvido, [clique aqui](./docs//UMLquiz.md).
+Consultar distribuição das notas:
 
----
+```bash
+py main.py relatorio distribuicao
+```
 
-<br>
-<br>
+Consultar ranking:
 
-## 🧱 Decisões de design:
+```bash
+py main.py relatorio ranking
+```
 
-As decisões de design tomadas ao longo do projeto buscam atender aos requisitos definidos para o sistema e aplicar de forma coerente os conceitos de Programação Orientada a Objetos.
+Consultar desempenho por tema:
 
-Entre as principais decisões estão a utilização de `Pergunta` como classe base, a especialização de `PerguntaBonus`, a utilização de `Participante` e `Criador` como papéis reutilizáveis por meio de múltipla herança e a composição entre `Quiz` e `Pergunta` e entre `Tentativa` e `Resposta`.
+```bash
+py main.py relatorio temas
+```
 
+Consultar questões mais erradas:
 
+```bash
+py main.py relatorio questoes
+```
 
----
+Consultar evolução de um participante:
 
-<br>
-<br>
+```bash
+py main.py relatorio evolucao --participante A001
+```
 
-## 🎮 Funcionalidades:
+## 🏗️ Estrutura do projeto
 
 ```text
-Será documentado posteriormente
+Projeto_POO_IES/
+│
+├── data/
+│   ├── quizzes.json
+│   ├── temas.json
+│   ├── tentativas.json
+│   └── usuario.json
+│
+├── docs/
+│   ├── decisoes-de-design.md
+│   └── UMLquiz.md
+│
+├── src/
+│   ├── papeis/
+│   │   ├── criador.py
+│   │   └── participante.py
+│   │
+│   ├── quiz/
+│   │   ├── pergunta.py
+│   │   ├── pergunta_bonus.py
+│   │   └── quiz.py
+│   │
+│   ├── relatorio/
+│   │   └── relatorio.py
+│   │
+│   ├── tema/
+│   │   └── tema.py
+│   │
+│   ├── tentativa/
+│   │   ├── resposta.py
+│   │   └── tentativa.py
+│   │
+│   ├── usuario/
+│   │   ├── usuario.py
+│   │   ├── aluno.py
+│   │   └── professor.py
+│   │
+│   └── dados.py
+│
+├── testes/
+│   ├── teste_criador.py
+│   ├── teste_participante.py
+│   ├── teste_pergunta.py
+│   ├── teste_quiz.py
+│   ├── teste_relatorio.py
+│   ├── teste_tentativa.py
+│   ├── teste_usuario.py
+│   └── teste_dados.py
+│
+├── .gitignore
+├── main.py
+├── pytest.ini
+├── requirements.txt
+├── settings.json
+└── README.md
 ```
 
----
+### Organização das responsabilidades
 
-<br>
-<br>
+- `usuario/`: identidade e especializações dos usuários.
+- `papeis/`: comportamentos de participação e criação.
+- `quiz/`: perguntas, perguntas bônus e gerenciamento dos quizzes.
+- `tema/`: representação dos temas.
+- `tentativa/`: execução, respostas e resultados.
+- `relatorio/`: análise dos resultados registrados.
+- `dados.py`: leitura e gravação dos dados em JSON.
+- `data/`: armazenamento persistente.
+- `testes/`: testes automatizados.
+- `docs/`: documentação de decisões e modelagem.
 
-## 🧩 Cobertura dos testes:
+## 🧱 Modelagem e decisões de design
 
-```text
-Será documentado posteriormente
+O sistema utiliza herança para especializar usuários e múltipla herança para reutilizar comportamentos.
+
+`Participante` e `Criador` são papéis independentes. Um aluno é um usuário participante, enquanto um professor é um usuário que pode atuar tanto como participante quanto como criador de quizzes.
+
+O quiz mantém suas perguntas e cada tentativa registra as respostas associadas à avaliação realizada.
+
+As perguntas bônus são especializações de `Pergunta`, utilizando herança e polimorfismo para calcular a pontuação adicional.
+
+As decisões de modelagem estão documentadas em [`docs/decisoes-de-design.md`](docs/decisoes-de-design.md).
+
+O diagrama UML está disponível em [`docs/UMLquiz.md`](docs/UMLquiz.md).
+
+## 🎮 Funcionalidades implementadas
+
+- Cadastro e listagem de alunos e professores.
+- Cadastro de perguntas com tema, alternativas, resposta correta e dificuldade.
+- Classificação de perguntas como normais ou bônus.
+- Pontuação adicional de 2 pontos para perguntas bônus respondidas corretamente.
+- Cálculo de pontuação conforme a dificuldade e a classificação da pergunta.
+- Validação de perguntas e alternativas.
+- Criação e listagem de quizzes.
+- Associação de perguntas aos quizzes.
+- Bloqueio de reutilização de perguntas em outros quizzes.
+- Limite de tempo e de tentativas configurável por quiz.
+- Execução de tentativas e registro de respostas.
+- Cálculo de pontuação e taxa de acerto.
+- Exibição do gabarito após a execução.
+- Persistência de dados em JSON.
+- Relatórios de aprovação, distribuição de notas, ranking, desempenho por tema, questões mais erradas e evolução individual.
+
+## 🧪 Testes
+
+O projeto utiliza Pytest para verificar as regras de negócio, validações, relacionamentos, execução das tentativas, cálculo de pontuação, perguntas bônus, relatórios e persistência.
+
+Para executar a suíte de testes:
+
+```bash
+py -m pytest -v
 ```
 
----
+**Última validação: 96 testes aprovados.**
