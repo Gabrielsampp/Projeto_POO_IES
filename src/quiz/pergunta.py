@@ -1,149 +1,233 @@
-# Classe Pergunta
+
+from src.tema.tema import Tema
+
+
 class Pergunta:
-
-    def __init__(self, tema, enunciado, alternativas, indice_correto, dificuldade):
-
+    def __init__(
+        self, tema, enunciado, alternativas,
+        indice_correto, dificuldade
+    ):
         self.tema = tema
         self.enunciado = enunciado
         self.alternativas = alternativas
         self.indice_correto = indice_correto
         self.dificuldade = dificuldade
+        self._quiz = None
 
-        self.validar()
+    @property
+    def quiz(self):
+        return self._quiz
 
-    # Validação dos dados da pergunta
-    def validar(self):
+    def _vincular_quiz(self, quiz):
+        if self._quiz is not None and self._quiz is not quiz:
+            raise ValueError(
+                "Esta pergunta já pertence a outro Quiz."
+            )
 
-        # Validação do tema
-        if self.tema is None or str(self.tema).strip() == "":
-            raise ValueError("O tema não pode estar vazio.")
+        self._quiz = quiz
 
-        # Validação do enunciado
-        if self.enunciado is None or str(self.enunciado).strip() == "":
+    @property
+    def tema(self):
+        return self._tema
+
+    @tema.setter
+    def tema(self, valor):
+        if not isinstance(valor, Tema):
+            raise TypeError("É necessário fornecer um objeto Tema.")
+
+        self._tema = valor
+
+    @property
+    def enunciado(self):
+        return self._enunciado
+
+    @enunciado.setter
+    def enunciado(self, valor):
+        if not isinstance(valor, str):
+            raise TypeError("O enunciado deve ser um texto.")
+
+        valor = valor.strip()
+
+        if not valor:
             raise ValueError("O enunciado não pode estar vazio.")
 
-        # Validação da quantidade de alternativas
-        if not isinstance(self.alternativas, list):
-            raise TypeError("As alternativas devem estar em uma lista.")
+        self._enunciado = valor
 
-        if len(self.alternativas) < 3 or len(self.alternativas) > 5:
-            raise ValueError("A pergunta deve possuir entre 3 e 5 alternativas.")
+    @property
+    def alternativas(self):
+        return tuple(self._alternativas)
 
-        # Validação das alternativas
-        for alternativa in self.alternativas:
-            if not isinstance(alternativa, str) or alternativa.strip() == "":
-                raise ValueError("As alternativas não podem estar vazias.")
+    @alternativas.setter
+    def alternativas(self, valores):
+        if not isinstance(valores, (list, tuple)):
+            raise TypeError(
+                "As alternativas devem ser uma lista ou tupla."
+            )
 
-        # Validação de alternativas duplicadas
-        alternativas_limpo = []
+        if not 3 <= len(valores) <= 5:
+            raise ValueError(
+                "A pergunta deve possuir entre 3 e 5 alternativas."
+            )
 
-        for alternativa in self.alternativas:
-            alternativa = alternativa.strip().lower()
+        alternativas = []
 
-            if alternativa in alternativas_limpo:
-                raise ValueError("Não podem existir alternativas duplicadas.")
+        for valor in valores:
+            if not isinstance(valor, str):
+                raise TypeError("As alternativas devem ser textos.")
 
-            alternativas_limpo.append(alternativa)
+            valor = valor.strip()
 
-        # Validação do índice correto
-        if not isinstance(self.indice_correto, int):
-            raise TypeError("O índice correto deve ser um número inteiro.")
+            if not valor:
+                raise ValueError(
+                    "As alternativas não podem estar vazias."
+                )
 
-        if self.indice_correto < 0 or self.indice_correto >= len(self.alternativas):
-            raise ValueError("O índice correto não corresponde a uma alternativa válida.")
+            if valor.casefold() in [
+                item.casefold() for item in alternativas
+            ]:
+                raise ValueError(
+                    "Não podem existir alternativas duplicadas."
+                )
 
-        # Validação da dificuldade
-        if self.dificuldade not in ["F", "M", "D"]:
-            raise ValueError("A dificuldade deve ser F, M ou D.")
+            alternativas.append(valor)
 
-        return True
+        if hasattr(self, "_indice_correto"):
+            if self._indice_correto >= len(alternativas):
+                raise ValueError(
+                    "A alteração das alternativas invalidaria "
+                    "o índice correto."
+                )
 
-    # Adiciona uma alternativa
+        self._alternativas = alternativas
+
+    @property
+    def indice_correto(self):
+        return self._indice_correto
+
+    @indice_correto.setter
+    def indice_correto(self, valor):
+        if type(valor) is not int:
+            raise TypeError("O índice correto deve ser inteiro.")
+
+        if not 0 <= valor < len(self._alternativas):
+            raise ValueError("Índice da alternativa correta inválido.")
+
+        self._indice_correto = valor
+
+    @property
+    def dificuldade(self):
+        return self._dificuldade
+
+    @dificuldade.setter
+    def dificuldade(self, valor):
+        if not isinstance(valor, str):
+            raise TypeError("A dificuldade deve ser um texto.")
+
+        valor = valor.strip().upper()
+
+        if valor not in ("F", "M", "D"):
+            raise ValueError(
+                "A dificuldade deve ser F, M ou D."
+            )
+
+        self._dificuldade = valor
+
     def adicionar_alternativa(self, alternativa):
+        if len(self._alternativas) >= 5:
+            raise ValueError(
+                "A pergunta não pode possuir mais de 5 alternativas."
+            )
 
-        if not isinstance(alternativa, str) or alternativa.strip() == "":
+        if not isinstance(alternativa, str):
+            raise TypeError("A alternativa deve ser um texto.")
+
+        alternativa = alternativa.strip()
+
+        if not alternativa:
             raise ValueError("A alternativa não pode estar vazia.")
 
-        if len(self.alternativas) >= 5:
-            raise ValueError("A pergunta não pode possuir mais de 5 alternativas.")
+        if any(
+            item.casefold() == alternativa.casefold()
+            for item in self._alternativas
+        ):
+            raise ValueError("A alternativa já existe.")
 
-        for existente in self.alternativas:
-            if existente.strip().lower() == alternativa.strip().lower():
-                raise ValueError("A alternativa já existe.")
+        self._alternativas.append(alternativa)
 
-        self.alternativas.append(alternativa.strip())
-
-    # Remove uma alternativa
     def remover_alternativa(self, indice):
+        if type(indice) is not int:
+            raise TypeError("O índice deve ser inteiro.")
 
-        if len(self.alternativas) <= 3:
-            raise ValueError("A pergunta deve possuir pelo menos 3 alternativas.")
-
-        if indice < 0 or indice >= len(self.alternativas):
+        if not 0 <= indice < len(self._alternativas):
             raise IndexError("Índice de alternativa inválido.")
 
-        if indice == self.indice_correto:
-            raise ValueError("Não é possível remover a alternativa correta.")
+        if len(self._alternativas) <= 3:
+            raise ValueError(
+                "A pergunta deve possuir pelo menos 3 alternativas."
+            )
 
-        self.alternativas.pop(indice)
+        if indice == self._indice_correto:
+            raise ValueError(
+                "Não é possível remover a alternativa correta."
+            )
 
-        # Ajusta o índice correto caso uma alternativa anterior tenha sido removida
-        if indice < self.indice_correto:
-            self.indice_correto -= 1
+        self._alternativas.pop(indice)
 
-    # Altera uma alternativa
+        if indice < self._indice_correto:
+            self._indice_correto -= 1
+
     def alterar_alternativa(self, indice, alternativa):
+        if type(indice) is not int:
+            raise TypeError("O índice deve ser inteiro.")
 
-        if indice < 0 or indice >= len(self.alternativas):
+        if not 0 <= indice < len(self._alternativas):
             raise IndexError("Índice de alternativa inválido.")
 
-        if not isinstance(alternativa, str) or alternativa.strip() == "":
+        if not isinstance(alternativa, str):
+            raise TypeError("A alternativa deve ser um texto.")
+
+        alternativa = alternativa.strip()
+
+        if not alternativa:
             raise ValueError("A alternativa não pode estar vazia.")
 
-        for i, existente in enumerate(self.alternativas):
-
-            if i != indice and existente.strip().lower() == alternativa.strip().lower():
+        for i, existente in enumerate(self._alternativas):
+            if (
+                i != indice
+                and existente.casefold() == alternativa.casefold()
+            ):
                 raise ValueError("A alternativa já existe.")
 
-        self.alternativas[indice] = alternativa.strip()
+        self._alternativas[indice] = alternativa
 
-    # Verifica se uma resposta está correta
     def verificar_resposta(self, indice):
+        if type(indice) is not int:
+            raise TypeError(
+                "O índice da resposta deve ser inteiro."
+            )
+
+        if not 0 <= indice < len(self._alternativas):
+            raise IndexError("Índice de alternativa inválido.")
 
         return indice == self.indice_correto
 
-    # Calcula a pontuação da pergunta
     def calcular_pontuacao(self):
+        pesos = {"F": 1, "M": 2, "D": 3}
+        return pesos[self.dificuldade]
 
-        if self.dificuldade == "F":
-            return 1
-
-        elif self.dificuldade == "M":
-            return 2
-
-        elif self.dificuldade == "D":
-            return 3
-
-        return 0
-
-    # Representação da pergunta
     def __str__(self):
-
         return (
             f"Tema: {self.tema}\n"
             f"Enunciado: {self.enunciado}\n"
-            f"Alternativas: {self.alternativas}\n"
-            f"Índice correto: {self.indice_correto}\n"
+            f"Alternativas: {list(self.alternativas)}\n"
             f"Dificuldade: {self.dificuldade}"
         )
 
-    # Compara duas perguntas
-    def __eq__(self, outra_pergunta):
-
-        if not isinstance(outra_pergunta, Pergunta):
-            return False
+    def __eq__(self, outra):
+        if not isinstance(outra, Pergunta):
+            return NotImplemented
 
         return (
-            self.enunciado == outra_pergunta.enunciado
-            and self.tema == outra_pergunta.tema
+            self.enunciado.casefold() == outra.enunciado.casefold()
+            and self.tema == outra.tema
         )
